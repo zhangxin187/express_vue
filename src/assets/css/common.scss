@@ -1,0 +1,11 @@
+/* 公共css样式，所有的组件都共用，需要导入到入口js文件，单页应用模块化开发 */
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
