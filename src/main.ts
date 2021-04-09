@@ -9,6 +9,12 @@ import axios from 'axios';
 import NProgress from 'nprogress';
 // 导入进度条样式
 import 'nprogress/nprogress.css';
+// 导入自定义全局组件
+import Index from './views/Index.vue';
+import User from './views/users/User.vue';
+// 注册自定义全局组件
+Vue.component('Index', Index);
+Vue.component('User', User);
 
 Vue.prototype.$axios = axios;
 

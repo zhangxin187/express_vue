@@ -1,11 +1,35 @@
 /* 公共css样式，所有的组件都共用，需要导入到入口js文件，单页应用模块化开发 */
 
-html, body {
-    width: 100%;
-    height: 100%;
+html,
+body {
+  width: 100%;
+  height: 100%;
 }
 
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.el-dropdown-menu {
+  margin-top: 0px !important;
+}
+
+.el-row {
+  width: 100% !important;
+}
+
+// 针对顶部用户栏，对el-button进行改造,该span是button组件插槽外面包裹的span
+// 写在组件当中由于有scoped,所以不会生效
+.user_menu .el-button {
+  > span {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+  }
+}
+.el-aside {
+  overflow: hidden;
 }
