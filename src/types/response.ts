@@ -6,7 +6,7 @@ interface Meta {
   msg: string;
   status: number;
 }
-interface LoginData {
+export interface LoginData {
   role: 'normal' | 'admin';
   status: 0 | 1;
   _id: string;

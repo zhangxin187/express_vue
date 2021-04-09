@@ -46,7 +46,7 @@ import { Form } from 'node_modules/element-ui/types';
 import { ErrorMessage } from '../types/login';
 import Vue from 'vue';
 import { AxiosResponse } from 'node_modules/axios';
-import { LoginResponse } from '../types/response';
+import { LoginResponse, LoginData } from '../types/response';
 export default Vue.extend({
   data () {
     return {
@@ -73,11 +73,11 @@ export default Vue.extend({
       (this.$refs.loginForm as Form).validate(async (valid, err) => {
         if (valid) {
           // 发起请求,axios挂载到vue上 在该处获取不到，ts报错，故加any
-          const data:AxiosResponse = await (this as any).$axios.post(
+          const data: AxiosResponse = await (this as any).$axios.post(
             'login',
             this.form
           );
-          const res : LoginResponse = data.data;
+          const res: LoginResponse = data.data;
 
           if (res.meta.status !== 200) {
             this.$message({
@@ -87,6 +87,8 @@ export default Vue.extend({
             });
           } else {
             // 登录成功
+            // 存储token
+            sessionStorage.setItem('token', (res.data as LoginData).token);
             // 跳转到首页
             this.$router.push('home');
           }
