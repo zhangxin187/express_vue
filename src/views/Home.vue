@@ -130,7 +130,9 @@
                 <i class="iconfont icon-yonghu menu-item-icon"></i>
                 <span>用户管理</span>
               </template>
-              <el-menu-item index="1-1">用户列表</el-menu-item>
+              <el-menu-item index="1-1" @click="handleUserMenuClick"
+                >用户列表</el-menu-item
+              >
               <el-menu-item index="1-2">客户列表</el-menu-item>
             </el-submenu>
 
@@ -164,16 +166,21 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
+import { mapState, mapMutations } from 'vuex';
 export default Vue.extend({
   data () {
     return {
       // 控制侧边菜单是否折叠
       isCollapse: false,
       asideWidth: '210px',
-      aside_menu_switch_icon: 'el-icon-caret-left'
+      aside_menu_switch_icon: 'el-icon-caret-left',
+      // 左侧菜单的数据,对应state.tabPanes存储的数据,用来更新state.tabPanes,控制tab的切换
+      menus: null
     };
   },
   methods: {
+    // 更新state的mutation方法
+    ...mapMutations(['changeTabPanes', 'changeCurrentBreadcrumb', 'changeActiveTabPane']),
     // 折叠/显示 侧边菜单栏
     collapseMenu (): void {
       this.isCollapse = !this.isCollapse;
@@ -194,7 +201,26 @@ export default Vue.extend({
         sessionStorage.clear();
         this.$router.push('/login');
       }
+    },
+
+    // 响应用户管理被点击,在tab中显示对应的User组件
+    handleUserMenuClick () {
+      const tabPane = (this.menus as any).user;
+      // 将该菜单对应的数据追加到state.tabPanes数组中,只能通过mutation修改state
+      // 此处tabPane被映射为当前组件的计算属性,可以直接用push修改,后续再更新state,将追加后的数组对state进行更新
+      this.tabPanes.push(tabPane);
+      // 更新state
+      this.changeTabPanes(this.tabPanes);
+      this.changeCurrentBreadcrumb(tabPane.breadcrumb);
+      this.changeActiveTabPane(tabPane.id);
     }
+  },
+  computed: {
+    ...mapState(['tabPanes'])
+  },
+  async created (): Promise<void> {
+    const { data: res } = await (this as any).$axios.get('menus');
+    this.menus = res.data;
   }
 });
 </script>
