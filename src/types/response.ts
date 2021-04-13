@@ -1,5 +1,5 @@
-export interface LoginResponse {
-  data: null | LoginData;
+export interface ResponseData {
+  data: null | LoginData | UserData | UserData[];
   meta: Meta;
 }
 interface Meta {
@@ -15,4 +15,13 @@ export interface LoginData {
   phone: string;
   createTime: string;
   token: string;
+}
+export interface UserData {
+  role: 'normal' | 'admin';
+  status: 0 | 1;
+  _id: string;
+  name: string;
+  password?: string;
+  phone: string;
+  createTime?: string;
 }

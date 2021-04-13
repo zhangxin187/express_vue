@@ -27,7 +27,16 @@ import {
   TabPane,
   Tabs,
   Select,
-  Option
+  Option,
+  Table,
+  TableColumn,
+  Tag,
+  Switch,
+  Tooltip,
+  Pagination,
+  Dialog,
+  Radio,
+  MessageBox
 } from 'element-ui';
 
 Vue.use(Card);
@@ -57,5 +66,14 @@ Vue.use(TabPane);
 Vue.use(Tabs);
 Vue.use(Select);
 Vue.use(Option);
+Vue.use(Table);
+Vue.use(TableColumn);
+Vue.use(Tag);
+Vue.use(Switch);
+Vue.use(Tooltip);
+Vue.use(Pagination);
+Vue.use(Dialog);
+Vue.use(Radio);
 
 Vue.prototype.$message = Message;
+Vue.prototype.$confirm = MessageBox.confirm;
