@@ -46,7 +46,7 @@ import { Form } from 'node_modules/element-ui/types';
 import { ErrorMessage } from '../types/login';
 import Vue from 'vue';
 import { AxiosResponse } from 'node_modules/axios';
-import { LoginResponse, LoginData } from '../types/response';
+import { ResponseData, LoginData } from '../types/response';
 export default Vue.extend({
   data () {
     return {
@@ -77,7 +77,7 @@ export default Vue.extend({
             'login',
             this.form
           );
-          const res: LoginResponse = data.data;
+          const res: ResponseData = data.data;
 
           if (res.meta.status !== 200) {
             this.$message({
