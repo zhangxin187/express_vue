@@ -130,29 +130,39 @@
                 <i class="iconfont icon-yonghu menu-item-icon"></i>
                 <span>用户管理</span>
               </template>
-              <el-menu-item index="1-1" @click="handleUserMenuClick"
+              <el-menu-item index="1-1" @click="handleMenuClick('user')"
                 >用户列表</el-menu-item
               >
               <el-menu-item index="1-2">客户列表</el-menu-item>
             </el-submenu>
 
-            <!-- 订单管理 -->
+            <!-- 物品管理 -->
             <el-submenu index="2">
+              <template slot="title">
+                <i class="iconfont icon-xiangzi menu-item-icon"></i>
+                <span>物品管理</span>
+              </template>
+              <el-menu-item index="2-1" @click="handleMenuClick('category')">分类列表</el-menu-item>
+              <el-menu-item index="2-2">物品列表</el-menu-item>
+            </el-submenu>
+
+            <!-- 订单管理 -->
+            <el-submenu index="3">
               <template slot="title">
                 <i class="iconfont icon-icon-test menu-item-icon"></i>
                 <span>订单管理</span>
               </template>
-              <el-menu-item index="2-1">订单列表</el-menu-item>
-              <el-menu-item index="2-2">订单录入</el-menu-item>
+              <el-menu-item index="3-1">订单列表</el-menu-item>
+              <el-menu-item index="3-2">订单录入</el-menu-item>
             </el-submenu>
 
             <!-- 数据统计 -->
-            <el-submenu index="3">
+            <el-submenu index="4">
               <template slot="title">
                 <i class="iconfont icon-baobiao menu-item-icon"></i>
                 <span>数据统计</span>
               </template>
-              <el-menu-item index="3-1">数据报表</el-menu-item>
+              <el-menu-item index="4-1">数据报表</el-menu-item>
             </el-submenu>
           </el-menu>
         </el-aside>
@@ -203,9 +213,9 @@ export default Vue.extend({
       }
     },
 
-    // 响应用户管理被点击,在tab中显示对应的User组件
-    handleUserMenuClick () {
-      const tabPane = (this.menus as any).user;
+    // 响应左侧菜单被点击,在tab中显示对应的组件
+    handleMenuClick (key:string) {
+      const tabPane = (this.menus as any)[key];
       // 将该菜单对应的数据追加到state.tabPanes数组中,只能通过mutation修改state
       // 此处tabPane被映射为当前组件的计算属性,可以直接用push修改,后续再更新state,将追加后的数组对state进行更新
       this.tabPanes.push(tabPane);
