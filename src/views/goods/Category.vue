@@ -319,7 +319,7 @@ export default {
 
     // 删除分类
     async deleteCategory (id) {
-      const confirm = await this.$confirm('是否删除该用户？', {
+      const confirm = await this.$confirm('是否删除该分类？', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
