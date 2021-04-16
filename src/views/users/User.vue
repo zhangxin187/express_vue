@@ -5,12 +5,7 @@
       <el-row :gutter="20">
         <el-col :span="9">
           <div class="search">
-            <el-input
-              placeholder="请输入查询内容"
-              clearable
-              v-model="inputValue"
-              @clear="getAllUsers"
-            >
+            <el-input placeholder="请输入查询内容" clearable v-model="inputValue" @clear="getAllUsers">
               <el-select
                 v-model="selectValue"
                 slot="prepend"
@@ -20,18 +15,12 @@
                 <el-option label="姓名" value="name"></el-option>
                 <el-option label="电话" value="phone"></el-option>
               </el-select>
-              <el-button
-                slot="append"
-                icon="el-icon-search"
-                @click="querySearch"
-              ></el-button>
+              <el-button slot="append" icon="el-icon-search" @click="querySearch"></el-button>
             </el-input>
           </div>
         </el-col>
         <el-col :span="5">
-          <el-button type="primary" @click="addUserDialogVisible = true"
-            >添加用户</el-button
-          >
+          <el-button type="primary" @click="addUserDialogVisible = true">添加用户</el-button>
         </el-col>
       </el-row>
     </div>
@@ -45,20 +34,14 @@
         <el-table-column prop="role" label="角色">
           <template v-slot="scope">
             <el-tag v-if="scope.row.role === 'admin'">超级管理员</el-tag>
-            <el-tag type="success" v-if="scope.row.role === 'normal'"
-              >普通管理员</el-tag
-            >
+            <el-tag type="success" v-if="scope.row.role === 'normal'">普通管理员</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="status" label="启用状态">
           <!-- 用户状态switch开关 -->
           <template v-slot="scope">
             <!-- 提示文字组件 -->
-            <el-tooltip
-              effect="dark"
-              :content="scope.row.status ? '启用' : '禁用'"
-              placement="top"
-            >
+            <el-tooltip effect="dark" :content="scope.row.status ? '启用' : '禁用'" placement="top">
               <el-switch
                 v-model="scope.row.status"
                 :active-value="1"
@@ -172,9 +155,7 @@
         </el-form-item>
         <el-form-item label="密码" clearable style="margin-bottom:0">
           <el-input v-model="editUserForm.password" show-password></el-input>
-          <el-link type="primary" :underline="false" @click="resetPassword"
-            >重置密码</el-link
-          >
+          <el-link type="primary" :underline="false" @click="resetPassword">重置密码</el-link>
         </el-form-item>
         <el-form-item label="角色" prop="role">
           <el-select v-model="editUserForm.role" placeholder="请选择">
@@ -200,6 +181,7 @@
 import { Form } from 'node_modules/element-ui/types/element-ui';
 import Vue from 'vue';
 import { UserData } from '../../types/response';
+import _ from 'lodash';
 export default Vue.extend({
   data () {
     return {
@@ -220,7 +202,7 @@ export default Vue.extend({
         phone: '',
         role: 'normal',
         status: 1,
-        password: '123'
+        password: ''
       },
       // 添加用户的表单验证
       addUserRules: {
@@ -246,7 +228,9 @@ export default Vue.extend({
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 6, max: 16, message: '密码长度在6-16位', trigger: 'blur' }
         ],
-        status: [{ required: true, message: '请选择用户状态', trigger: 'blur' }]
+        status: [
+          { required: true, message: '请选择用户状态', trigger: 'blur' }
+        ]
       },
       // 编辑用户对话框的显示隐藏
       editUserDialogVisible: false,
@@ -315,12 +299,21 @@ export default Vue.extend({
       }
     },
 
-    // 更改用户启用状态
-    async changeStatus (row: UserData): Promise<void> {
-      const { _id: id, status } = row;
-      // 发起请求,将更改保存到数据库
-      await (this as any).$axios.put(`users/${id}`, { status });
-    },
+    // 更改用户启用状态,防抖
+    changeStatus: _.debounce(
+      async function (row: UserData) {
+        const { _id: id, status } = row;
+        // 发起请求,将更改保存到数据库
+        const { data: res } = await (this as any).$axios.put(`users/${id}`, {
+          status
+        });
+        if (res.meta.status === 200) {
+          this.$message.success('修改成功！');
+        }
+      },
+      1000,
+      { leading: true }
+    ),
 
     // 关闭添加用户的对话框
     closeAddUserDialog (): void {
@@ -332,7 +325,7 @@ export default Vue.extend({
     // 添加用户
     addUser (): void {
       // 对表单字段进行验证
-      (this.$refs.addUserRef as Form).validate(async valid => {
+      (this.$refs.addUserRef as Form).validate(async (valid) => {
         if (valid) {
           // 验证成功
           const { data: res } = await (this as any).$axios.post(
@@ -345,9 +338,16 @@ export default Vue.extend({
               type: 'error',
               message: res.meta.msg
             });
+          } else {
+            this.$message.success('添加成功！');
+            this.getAllUsers();
+            // 隐藏对话框
+            this.addUserDialogVisible = false;
+            // 清空表单
+            this.addUserForm.name = '';
+            this.addUserForm.phone = '';
+            this.addUserForm.password = '';
           }
-          // 隐藏对话框
-          this.addUserDialogVisible = false;
         } else {
           // 验证失败
           this.$message({
@@ -364,7 +364,7 @@ export default Vue.extend({
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).catch(err => err);
+      }).catch((err: any) => err);
 
       // 发送请求
       if (confirm === 'confirm') {
@@ -381,7 +381,7 @@ export default Vue.extend({
     },
 
     // 显示编辑用户对话框
-    async showEditUserDialog (id: string):Promise<void> {
+    async showEditUserDialog (id: string): Promise<void> {
       this.editUserDialogVisible = true;
       // 根据id查询用户信息
       const { data: res } = await (this as any).$axios.get('users/' + id);
@@ -390,13 +390,13 @@ export default Vue.extend({
     },
 
     // 编辑用户重置密码
-    resetPassword ():void {
+    resetPassword (): void {
       this.editUserForm.password = this.DEFAULT_PW;
       console.log(this.editUserForm);
     },
 
     // 关闭编辑用户对话框
-    closeEditUserDialog ():void {
+    closeEditUserDialog (): void {
       this.editUserDialogVisible = false;
       // 清空表单
       (this.$refs.editUserRef as Form).resetFields();
@@ -405,9 +405,9 @@ export default Vue.extend({
     },
 
     // 保存修改的用户信息
-    saveEditUser ():void {
+    saveEditUser (): void {
       // 对表单字段进行验证
-      (this.$refs.editUserRef as Form).validate(async valid => {
+      (this.$refs.editUserRef as Form).validate(async (valid) => {
         if (!valid) {
           // 验证失败
           return this.$message({
@@ -458,7 +458,7 @@ export default Vue.extend({
     }
   },
 
-  created ():void {
+  created (): void {
     // 获取全部用户列表
     this.getAllUsers();
   }

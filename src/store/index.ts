@@ -14,7 +14,9 @@ export default new Vuex.Store({
     // 对应tabpane的面包屑导航
     currentBreadcrumb: [],
     // 当前选中的tabpane,值为id
-    activeTabPane: '0'
+    activeTabPane: '0',
+    // 分类数据显示类型(列表、树状)('list'/'tree')
+    categoryDataType: 'list'
   },
   mutations: {
     changeTabPanes (state, tabPanes) {
@@ -26,6 +28,11 @@ export default new Vuex.Store({
     changeActiveTabPane (state, tabPaneId) {
       // tabPane的name要求为字符串
       state.activeTabPane = tabPaneId + '';
+    },
+    // 修改分类数据显示类型
+    changeCateDataType (state) {
+      state.categoryDataType =
+        state.categoryDataType === 'list' ? 'tree' : 'list';
     }
   },
   actions: {},

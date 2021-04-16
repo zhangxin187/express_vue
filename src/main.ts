@@ -15,9 +15,11 @@ import _ from 'lodash';
 // 导入自定义全局组件
 import Index from './views/Index.vue';
 import User from './views/users/User.vue';
+import Category from './views/goods/Category.vue';
 // 注册自定义全局组件
 Vue.component('Index', Index);
 Vue.component('User', User);
+Vue.component('Category', Category);
 
 Vue.prototype.$_ = _;
 Vue.prototype.$axios = axios;
