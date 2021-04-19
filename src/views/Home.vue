@@ -133,7 +133,7 @@
               <el-menu-item index="1-1" @click="handleMenuClick('user')"
                 >用户列表</el-menu-item
               >
-              <el-menu-item index="1-2">客户列表</el-menu-item>
+              <el-menu-item index="1-2" @click="handleMenuClick('customer')">客户列表</el-menu-item>
             </el-submenu>
 
             <!-- 物品管理 -->
@@ -143,7 +143,7 @@
                 <span>物品管理</span>
               </template>
               <el-menu-item index="2-1" @click="handleMenuClick('category')">分类列表</el-menu-item>
-              <el-menu-item index="2-2">物品列表</el-menu-item>
+              <el-menu-item index="2-2" @click="handleMenuClick('goods')">物品列表</el-menu-item>
             </el-submenu>
 
             <!-- 订单管理 -->

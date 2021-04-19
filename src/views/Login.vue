@@ -89,6 +89,7 @@ export default Vue.extend({
             // 登录成功
             // 存储token
             sessionStorage.setItem('token', (res.data as LoginData).token);
+            this.$refs.loginForm.resetFields();
             // 跳转到首页
             this.$router.push('home');
           }

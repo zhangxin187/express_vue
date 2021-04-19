@@ -16,10 +16,14 @@ import _ from 'lodash';
 import Index from './views/Index.vue';
 import User from './views/users/User.vue';
 import Category from './views/goods/Category.vue';
+import Goods from './views/goods/Goods.vue';
+import Customer from './views/users/Customer.vue';
 // 注册自定义全局组件
 Vue.component('Index', Index);
 Vue.component('User', User);
 Vue.component('Category', Category);
+Vue.component('Goods', Goods);
+Vue.component('Customer', Customer);
 
 Vue.prototype.$_ = _;
 Vue.prototype.$axios = axios;

@@ -392,6 +392,7 @@ export default {
         this.getCategoriesTree();
         this.getCategories();
         this.addCategoryDialogVisible = false;
+        this.$refs.addCategoryRef.resetFields();
       }
     },
 

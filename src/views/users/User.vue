@@ -344,9 +344,7 @@ export default Vue.extend({
             // 隐藏对话框
             this.addUserDialogVisible = false;
             // 清空表单
-            this.addUserForm.name = '';
-            this.addUserForm.phone = '';
-            this.addUserForm.password = '';
+            this.$refs.addUserRef.resetFields();
           }
         } else {
           // 验证失败
