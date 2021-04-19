@@ -124,6 +124,7 @@ export default {
       goodsList: [],
       pagenum: 1,
       pagesize: 5,
+      total: 0,
       // 编辑物品名的输入框显示隐藏状态
       GoodsNameInputVisible: false,
       // 原物品名,用来和更改后的name进行对比,查看是否有效更改
@@ -226,7 +227,7 @@ export default {
       this.GoodsNameInputVisible = false;
     },
 
-    // 删除用户
+    // 删除物品
     async deleteGoods (id) {
       const confirm = await this.$confirm('是否删除该物品？', {
         confirmButtonText: '确定',
@@ -258,6 +259,7 @@ export default {
         // 重新获取数据
         this.getGoods();
         this.addGoodsDialogVisible = false;
+        this.$refs.addCategoryRef.resetFields();
       }
     },
 
