@@ -255,7 +255,6 @@ export default {
           [key]: this.searchValue // 对象计算属性
         }
       });
-      console.log(res);
       this.customerList = res.data.docs;
       this.total = res.data.totalDocs;
     },

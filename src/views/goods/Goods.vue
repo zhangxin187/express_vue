@@ -87,10 +87,10 @@
     ></el-pagination>
 
     <!-- 添加物品的对话框 -->
-    <el-dialog title="添加物品" :visible.sync="addGoodsDialogVisible" width="40%">
+    <el-dialog title="添加物品" :visible.sync="addGoodsDialogVisible" width="40%" >
       <!-- 表单 -->
       <el-form
-        ref="addCategoryRef"
+        ref="addGoodsRef"
         :model="addGoodsForm"
         :rules="rules"
         label-width="80px"
@@ -110,7 +110,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="closeAddCategoryDialog">取 消</el-button>
+        <el-button @click="closeAddGoodsDialog">取 消</el-button>
         <el-button type="primary" @click="saveAddGoods">确 定</el-button>
       </span>
     </el-dialog>
@@ -259,7 +259,8 @@ export default {
         // 重新获取数据
         this.getGoods();
         this.addGoodsDialogVisible = false;
-        this.$refs.addCategoryRef.resetFields();
+        this.$refs.addGoodsRef.resetFields();
+        this.selectValue = [];
       }
     },
 
@@ -274,6 +275,13 @@ export default {
       });
       this.goodsList = res.data.docs;
       this.total = res.data.totalDocs;
+    },
+
+    // 关闭添加商品对话框
+    closeAddGoodsDialog () {
+      this.addGoodsDialogVisible = false;
+      this.$refs.addGoodsRef.resetFields();
+      this.selectValue = [];
     }
   },
 
