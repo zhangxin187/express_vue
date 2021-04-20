@@ -152,7 +152,7 @@
                 <i class="iconfont icon-icon-test menu-item-icon"></i>
                 <span>订单管理</span>
               </template>
-              <el-menu-item index="3-1">订单列表</el-menu-item>
+              <el-menu-item index="3-1" @click="handleMenuClick('order')">订单列表</el-menu-item>
               <el-menu-item index="3-2">订单录入</el-menu-item>
             </el-submenu>
 
