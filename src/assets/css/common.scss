@@ -34,8 +34,13 @@ body {
   overflow: hidden;
 }
 
-//固定级联选择器的高度，避免随着数据变化，它的高度和位置随着变化 
+//固定级联选择器的高度，避免随着数据变化，它的高度和位置随着变化
 
 .el-cascader-menu {
   height: 220px;
+}
+
+// 对Chart.vue中的日期范围选择组件进行改造
+.charts .el-date-editor {
+  width: 250px;
 }

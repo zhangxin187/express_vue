@@ -3,19 +3,11 @@
     <el-container>
       <el-header style="height:50px">
         <div class="banner">
-          <el-row
-            type="flex"
-            justify="space-between"
-            align="middle"
-            style="height: 100%"
-          >
+          <el-row type="flex" justify="space-between" align="middle" style="height: 100%">
             <!-- 网站标题 -->
             <el-col :span="4">
               <p class="title banner_left">
-                <i
-                  class="iconfont icon-kuaidijindu"
-                  style="font-size:28px;font-weight:normal"
-                ></i>
+                <i class="iconfont icon-kuaidijindu" style="font-size:28px;font-weight:normal"></i>
                 邮政物流管理系统
               </p>
             </el-col>
@@ -35,12 +27,8 @@
                           style="font-size:22px"
                         ></el-button>
                         <el-dropdown-menu slot="dropdown" style="width:120px">
-                          <el-dropdown-item icon="el-icon-user"
-                            >个人资料</el-dropdown-item
-                          >
-                          <el-dropdown-item icon="el-icon-switch-button"
-                            >退出登录</el-dropdown-item
-                          >
+                          <el-dropdown-item icon="el-icon-user">个人资料</el-dropdown-item>
+                          <el-dropdown-item icon="el-icon-switch-button">退出登录</el-dropdown-item>
                         </el-dropdown-menu>
                       </el-dropdown>
                     </div>
@@ -57,11 +45,7 @@
                           style="font-size:22px"
                         >
                           <!-- bage标记提示 -->
-                          <el-badge
-                            :value="12"
-                            class="notice_bage"
-                            is-dot
-                          ></el-badge>
+                          <el-badge :value="12" class="notice_bage" is-dot></el-badge>
                         </el-button>
 
                         <el-dropdown-menu slot="dropdown" style="width:120px">
@@ -81,25 +65,18 @@
                           style="font-size:22px"
                         >
                           <!-- 头像框 -->
-                          <el-avatar
-                            class="image"
-                            icon="el-icon-user-solid"
-                            size="large"
-                          ></el-avatar>
+                          <el-avatar class="image" icon="el-icon-user-solid" size="large"></el-avatar>
                           <span class="user_info">欢迎使用，张鑫</span>
                           <i class="el-icon-arrow-down user_arrow_down"></i>
                         </el-button>
 
                         <el-dropdown-menu slot="dropdown" style="width:200px">
-                          <el-dropdown-item icon="el-icon-user"
-                            >个人资料</el-dropdown-item
-                          >
+                          <el-dropdown-item icon="el-icon-user">个人资料</el-dropdown-item>
                           <el-dropdown-item
                             icon="el-icon-switch-button"
                             divided
                             command="logout"
-                            >退出登录</el-dropdown-item
-                          >
+                          >退出登录</el-dropdown-item>
                         </el-dropdown-menu>
                       </el-dropdown>
                     </div>
@@ -114,25 +91,15 @@
       <el-container>
         <el-aside :width="asideWidth">
           <!-- 侧边导航栏 -->
-          <el-menu
-            background-color="#E6F2FE"
-            :collapse="isCollapse"
-            :collapse-transition="false"
-          >
-            <el-button
-              class="menu_switch"
-              :icon="aside_menu_switch_icon"
-              @click="collapseMenu"
-            ></el-button>
+          <el-menu background-color="#E6F2FE" :collapse="isCollapse" :collapse-transition="false">
+            <el-button class="menu_switch" :icon="aside_menu_switch_icon" @click="collapseMenu"></el-button>
             <!-- 用户/客户管理 -->
             <el-submenu index="1">
               <template slot="title">
                 <i class="iconfont icon-yonghu menu-item-icon"></i>
                 <span>用户管理</span>
               </template>
-              <el-menu-item index="1-1" @click="handleMenuClick('user')"
-                >用户列表</el-menu-item
-              >
+              <el-menu-item index="1-1" @click="handleMenuClick('user')">用户列表</el-menu-item>
               <el-menu-item index="1-2" @click="handleMenuClick('customer')">客户列表</el-menu-item>
             </el-submenu>
 
@@ -153,7 +120,6 @@
                 <span>订单管理</span>
               </template>
               <el-menu-item index="3-1" @click="handleMenuClick('order')">订单列表</el-menu-item>
-              <el-menu-item index="3-2">订单录入</el-menu-item>
             </el-submenu>
 
             <!-- 数据统计 -->
@@ -162,7 +128,7 @@
                 <i class="iconfont icon-baobiao menu-item-icon"></i>
                 <span>数据统计</span>
               </template>
-              <el-menu-item index="4-1">数据报表</el-menu-item>
+              <el-menu-item index="4-1" @click="handleMenuClick('charts')">数据图表</el-menu-item>
             </el-submenu>
           </el-menu>
         </el-aside>
@@ -190,7 +156,11 @@ export default Vue.extend({
   },
   methods: {
     // 更新state的mutation方法
-    ...mapMutations(['changeTabPanes', 'changeCurrentBreadcrumb', 'changeActiveTabPane']),
+    ...mapMutations([
+      'changeTabPanes',
+      'changeCurrentBreadcrumb',
+      'changeActiveTabPane'
+    ]),
     // 折叠/显示 侧边菜单栏
     collapseMenu (): void {
       this.isCollapse = !this.isCollapse;
@@ -214,7 +184,7 @@ export default Vue.extend({
     },
 
     // 响应左侧菜单被点击,在tab中显示对应的组件
-    handleMenuClick (key:string) {
+    handleMenuClick (key: string) {
       const tabPane = (this.menus as any)[key];
       // 将该菜单对应的数据追加到state.tabPanes数组中,只能通过mutation修改state
       // 此处tabPane被映射为当前组件的计算属性,可以直接用push修改,后续再更新state,将追加后的数组对state进行更新

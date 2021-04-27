@@ -13,10 +13,9 @@
       <el-tabs
         type="border-card"
         closable
-        style="height: 100%"
         :value="activeTabPane"
         @tab-click="handleTabClick"
-        @tab-remove='removeTab'
+        @tab-remove="removeTab"
       >
         <el-tab-pane
           :label="item.label"
@@ -46,7 +45,11 @@ export default Vue.extend({
   },
   methods: {
     // mutation
-    ...mapMutations(['changeTabPanes', 'changeCurrentBreadcrumb', 'changeActiveTabPane']),
+    ...mapMutations([
+      'changeTabPanes',
+      'changeCurrentBreadcrumb',
+      'changeActiveTabPane'
+    ]),
 
     // 响应tabPane点击事件
     handleTabClick (tab: TabPane): void {
@@ -62,9 +65,9 @@ export default Vue.extend({
     },
 
     // 删除tab
-    removeTab (tabName:any):void {
+    removeTab (tabName: any): void {
       // 根据tabName(id)查找到state.tanPanes中对应的索引,并删除掉
-      const index = this.tabPanes.findIndex((item:any, index:number) => {
+      const index = this.tabPanes.findIndex((item: any, index: number) => {
         return item.id === +tabName;
       });
       this.tabPanes.splice(index, 1);
@@ -78,7 +81,6 @@ export default Vue.extend({
       this.changeCurrentBreadcrumb(activeTabPne.breadcrumb);
       this.changeActiveTabPane(activeTabPne.id);
     }
-
   }
 });
 </script>
@@ -96,4 +98,7 @@ export default Vue.extend({
   transition: color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
   color: #303133;
 }
+.topNav{
+}
+
 </style>
