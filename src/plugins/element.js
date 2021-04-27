@@ -38,7 +38,8 @@ import {
   Radio,
   MessageBox,
   Cascader,
-  DatePicker
+  DatePicker,
+  Alert
 } from 'element-ui';
 
 Vue.use(Card);
@@ -78,6 +79,7 @@ Vue.use(Dialog);
 Vue.use(Radio);
 Vue.use(Cascader);
 Vue.use(DatePicker);
+Vue.use(Alert);
 
 Vue.prototype.$message = Message;
 Vue.prototype.$confirm = MessageBox.confirm;
