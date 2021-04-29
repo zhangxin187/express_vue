@@ -1,24 +1,18 @@
 # express_pc
 
-## Project setup
-```
-npm install
-```
+## 物流管理系统前端项目
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+物流管理系统面向邮政网点，对农村电商产生的订单进行记录管理，并对电商数据进行统计分析，为农民提出决策性意见。
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### 前端项目技术栈
 
-### Lints and fixes files
-```
-npm run lint
-```
+* Vue
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+* TS
+
+* ElementUI
+
+* Axios
+
+* Echarts
+
