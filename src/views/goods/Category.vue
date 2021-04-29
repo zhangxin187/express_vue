@@ -325,7 +325,6 @@ export default {
         type: 'warning'
       }).catch(err => err);
       if (confirm === 'confirm') {
-        console.log(id);
         const { data: res } = await this.$axios.delete('categories/' + id);
         if (res.meta.status === 200) {
           this.$message.success('删除成功');

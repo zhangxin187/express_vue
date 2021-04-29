@@ -16,7 +16,9 @@ export default new Vuex.Store({
     // 当前选中的tabpane,值为id
     activeTabPane: '0',
     // 分类数据显示类型(列表、树状)('list'/'tree')
-    categoryDataType: 'list'
+    categoryDataType: 'list',
+    // 存储用户信息
+    userInfo: null
   },
   mutations: {
     changeTabPanes (state, tabPanes) {
@@ -33,6 +35,10 @@ export default new Vuex.Store({
     changeCateDataType (state) {
       state.categoryDataType =
         state.categoryDataType === 'list' ? 'tree' : 'list';
+    },
+    // 存储用户数据
+    saveUserInfo (state, user) {
+      state.userInfo = user;
     }
   },
   actions: {},

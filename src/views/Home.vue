@@ -13,65 +13,41 @@
             </el-col>
 
             <!-- 右边菜单区 -->
-            <el-col :span="5" style="height: 100%">
+            <el-col :span="4" style="height: 100%">
               <div class="banner_right">
                 <el-row style="height: 100%" type="flex" justify="space-around">
-                  <!-- 设置下拉栏 -->
-                  <el-col :span="4" style="height:100%">
-                    <div class="seeting drop_li">
-                      <el-dropdown trigger="click">
-                        <el-button
-                          type="info"
-                          class="drop_link drop_link_setting"
-                          icon="el-icon-setting"
-                          style="font-size:22px"
-                        ></el-button>
-                        <el-dropdown-menu slot="dropdown" style="width:120px">
-                          <el-dropdown-item icon="el-icon-user">个人资料</el-dropdown-item>
-                          <el-dropdown-item icon="el-icon-switch-button">退出登录</el-dropdown-item>
-                        </el-dropdown-menu>
-                      </el-dropdown>
-                    </div>
-                  </el-col>
-
-                  <!-- 通知下拉栏 -->
-                  <el-col :span="4" style="height:100%">
-                    <div class="notice drop_li">
-                      <el-dropdown trigger="click">
-                        <el-button
-                          type="warning"
-                          class="drop_link drop_link_notice"
-                          icon="el-icon-bell"
-                          style="font-size:22px"
-                        >
-                          <!-- bage标记提示 -->
-                          <el-badge :value="12" class="notice_bage" is-dot></el-badge>
-                        </el-button>
-
-                        <el-dropdown-menu slot="dropdown" style="width:120px">
-                          <el-dropdown-item>黄金糕</el-dropdown-item>
-                        </el-dropdown-menu>
-                      </el-dropdown>
-                    </div>
-                  </el-col>
-
                   <!-- 用户下拉栏 -->
-                  <el-col :span="16" style="height:100%">
+                  <el-col :span="24" style="height:100%">
                     <div class="user_menu drop_li">
-                      <el-dropdown trigger="click" @command="handleUserCommand">
+                      <el-dropdown
+                        trigger="click"
+                        @command="handleUserCommand"
+                        placement="bottom-start"
+                      >
                         <el-button
                           type="primary"
                           class="drop_link drop_link_user"
                           style="font-size:22px"
                         >
                           <!-- 头像框 -->
-                          <el-avatar class="image" icon="el-icon-user-solid" size="large"></el-avatar>
-                          <span class="user_info">欢迎使用，张鑫</span>
+                          <el-avatar
+                            class="image"
+                            :src="userInfo.avatar"
+                            icon="el-icon-user-solid"
+                            size="large"
+                            style="margin-left:10px"
+                          ></el-avatar>
+                          <span class="user_info">{{ '欢迎使用，' + userInfo.name }}</span>
                           <i class="el-icon-arrow-down user_arrow_down"></i>
                         </el-button>
 
                         <el-dropdown-menu slot="dropdown" style="width:200px">
-                          <el-dropdown-item icon="el-icon-user">个人资料</el-dropdown-item>
+                          <el-dropdown-item icon="el-icon-upload">
+                            <span @click="showUploadDialog">上传头像</span>
+                          </el-dropdown-item>
+                          <el-dropdown-item icon="iconfont icon-xiugai">
+                            <span @click="eidtPassdialogVisible = true">修改密码</span>
+                          </el-dropdown-item>
                           <el-dropdown-item
                             icon="el-icon-switch-button"
                             divided
@@ -138,20 +114,119 @@
         </el-main>
       </el-container>
     </el-container>
+
+    <!-- 修改密码对话框 -->
+    <el-dialog
+      title="修改密码"
+      :visible.sync="eidtPassdialogVisible"
+      width="40%"
+      @close="closeEditPassDialog"
+    >
+      <el-form
+        label-width="80px"
+        :model="editPassForm"
+        :rules="editPassRules"
+        ref="editPassRef"
+        status-icon
+      >
+        <el-form-item label="原密码" prop="orginPass">
+          <el-input v-model="editPassForm.orginPass" clearable show-password></el-input>
+        </el-form-item>
+        <el-form-item label="新密码" prop="newPass">
+          <el-input v-model="editPassForm.newPass" clearable show-password></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="checkPass">
+          <el-input v-model="editPassForm.checkPass" clearable show-password></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeEditPassDialog">取 消</el-button>
+        <el-button type="primary" @click="saveEditPass">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 上传头像对话框 -->
+    <el-dialog title="上传头像" :visible.sync="uploadDialogVisible" width="40%" @close="closeUploadDialog">
+      <el-upload
+        action="http://localhost:3000/upload"
+        name="file"
+        :multiple="false"
+        :show-file-list="false"
+        class="avatar-uploader"
+        :headers="headers"
+        :on-success="handleAvatarSuccess"
+        :data='{_id:userInfo._id}'
+      >
+        <img v-if="filePath" :src="filePath" class="avatar" />
+        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        <i v-if="filePath" class="el-icon-upload hover-avatar-icon"></i>
+        <!-- 遮挡层 -->
+        <div class="mask"></div>
+      </el-upload>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeUploadDialog">取 消</el-button>
+        <el-button type="primary" @click="closeUploadDialog">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
-<script lang="ts">
+<script>
 import Vue from 'vue';
 import { mapState, mapMutations } from 'vuex';
 export default Vue.extend({
   data () {
+    // 检测原密码是否输入正确
+    const validateOrginPass = async (rule, value, callback) => {
+      const { data: res } = await this.$axios.post('login', {
+        phone: this.userInfo.phone,
+        password: value
+      });
+      if (res.meta.status === 200) {
+        callback();
+      } else {
+        callback(new Error('密码输入错误'));
+      }
+    };
+    // 密码验证规则
+    const validateCheckPass = (rule, value, callback) => {
+      if (value !== this.editPassForm.newPass) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
     return {
       // 控制侧边菜单是否折叠
       isCollapse: false,
       asideWidth: '210px',
       aside_menu_switch_icon: 'el-icon-caret-left',
       // 左侧菜单的数据,对应state.tabPanes存储的数据,用来更新state.tabPanes,控制tab的切换
-      menus: null
+      menus: null,
+      // 修改密码对话框显示隐藏
+      eidtPassdialogVisible: false,
+      // 修改密码对话框的表单
+      editPassForm: {
+        orginPass: '',
+        newPass: '',
+        checkPass: ''
+      },
+      // 修改密码表单验证规则
+      editPassRules: {
+        orginPass: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { validator: validateOrginPass, trigger: 'blur', required: true }
+        ],
+        newPass: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
+        checkPass: [
+          { required: true, message: '请再次输入密码', trigger: 'blur' },
+          { validator: validateCheckPass, trigger: 'blur' }
+        ]
+      },
+      // 上传头像对话框显示隐藏
+      uploadDialogVisible: false,
+      // 文件上传后的服务器资源路径
+      filePath: ''
     };
   },
   methods: {
@@ -159,10 +234,11 @@ export default Vue.extend({
     ...mapMutations([
       'changeTabPanes',
       'changeCurrentBreadcrumb',
-      'changeActiveTabPane'
+      'changeActiveTabPane',
+      'saveUserInfo'
     ]),
     // 折叠/显示 侧边菜单栏
-    collapseMenu (): void {
+    collapseMenu () {
       this.isCollapse = !this.isCollapse;
       // 根据侧边菜单折叠状态,相应改变swtich的icon和aside的宽度
       if (!this.isCollapse) {
@@ -175,7 +251,7 @@ export default Vue.extend({
     },
 
     // 用户下拉框被点击时触发,根据item的key不同做不同响应,el-drowpdown-item无法绑定click事件
-    handleUserCommand (key: string): void {
+    handleUserCommand (key) {
       // 退出登录
       if (key === 'logout') {
         sessionStorage.clear();
@@ -184,22 +260,104 @@ export default Vue.extend({
     },
 
     // 响应左侧菜单被点击,在tab中显示对应的组件
-    handleMenuClick (key: string) {
-      const tabPane = (this.menus as any)[key];
+    handleMenuClick (key) {
+      const tabPane = this.menus[key];
       // 将该菜单对应的数据追加到state.tabPanes数组中,只能通过mutation修改state
-      // 此处tabPane被映射为当前组件的计算属性,可以直接用push修改,后续再更新state,将追加后的数组对state进行更新
-      this.tabPanes.push(tabPane);
-      // 更新state
-      this.changeTabPanes(this.tabPanes);
-      this.changeCurrentBreadcrumb(tabPane.breadcrumb);
-      this.changeActiveTabPane(tabPane.id);
+      // 检查该项是否已存在于state中
+      const flag = this.tabPanes.some((item) => {
+        return item.id === tabPane.id;
+      });
+      // 当该项不存在时,更新计算属性和state
+      if (!flag) {
+        // 此处tabPane被映射为当前组件的计算属性,可以直接用push修改,后续再更新state,将追加后的数组对state进行更新
+        this.tabPanes.push(tabPane);
+        // 更新state
+        this.changeTabPanes(this.tabPanes);
+        this.changeCurrentBreadcrumb(tabPane.breadcrumb);
+        this.changeActiveTabPane(tabPane.id);
+      } else {
+        // 当该项存在时,让tab显示对应的tabPane,更新state
+        this.changeCurrentBreadcrumb(tabPane.breadcrumb);
+        this.changeActiveTabPane(tabPane.id);
+      }
+    },
+
+    // 保存修改密码
+    saveEditPass () {
+      // 验证
+      this.$refs.editPassRef.validate(async (valid) => {
+        if (valid) {
+          // 验证成功
+          const { data: res } = await this.$axios.put(
+            'users/' + this.userInfo._id,
+            {
+              password: this.editPassForm.newPass
+            }
+          );
+          if (res.meta.status === 200) {
+            this.$message({
+              type: 'success',
+              message: '修改成功,请重新登录',
+              duration: 800
+            });
+            this.eidtPassdialogVisible = false;
+            this.$refs.editPassRef.resetFields();
+            // 1s后退出登录
+            setTimeout(() => {
+              sessionStorage.clear();
+              this.$router.push('/login');
+            }, 1000);
+          }
+        } else {
+          // 验证失败
+          this.$message({
+            type: 'error',
+            message: '修改失败,请重新输入'
+          });
+        }
+      });
+    },
+
+    // 关闭修改密码对话框
+    closeEditPassDialog () {
+      this.eidtPassdialogVisible = false;
+      this.$refs.editPassRef.resetFields();
+    },
+
+    // 显示上传头像对话框
+    async showUploadDialog () {
+      // 获取用户信息-头像
+      const { data: res } = await this.$axios.get('users/' + this.userInfo._id);
+      // es6语法
+      this.filePath = res.data?.avatar;
+      this.uploadDialogVisible = true;
+    },
+
+    // 响应头像上传成功
+    handleAvatarSuccess (response) {
+      if (response.meta.status === 200) {
+        this.filePath = response.data.path;
+        // 更新state中的userInfo
+        this.saveUserInfo(response.data);
+      }
+    },
+
+    // 关闭上传头像对话框
+    closeUploadDialog () {
+      this.uploadDialogVisible = false;
+      this.filePath = '';
     }
   },
   computed: {
-    ...mapState(['tabPanes'])
+    ...mapState(['tabPanes', 'userInfo']),
+    // 文件上传请求头，文件上传请求不是通过axios,aixos设置了请求拦截器为每个请求头都添加了token,故这里需要自己往请求头中加token
+    headers () {
+      const token = sessionStorage.getItem('token');
+      return { Authorization: token };
+    }
   },
-  async created (): Promise<void> {
-    const { data: res } = await (this as any).$axios.get('menus');
+  async created () {
+    const { data: res } = await this.$axios.get('menus');
     this.menus = res.data;
   }
 });
@@ -247,10 +405,10 @@ export default Vue.extend({
     .banner_right {
       background-color: #fff;
       height: 100%;
+      padding: 0 1px 0;
 
       .drop_li {
         height: 100%;
-        margin-right: 1px;
 
         .el-dropdown {
           width: 100%;
@@ -290,7 +448,7 @@ export default Vue.extend({
   font-size: 14px;
   line-height: 50px;
 }
-.el-button {
+.banner_right .el-button {
   padding: 0 0;
 }
 
@@ -305,13 +463,34 @@ export default Vue.extend({
   margin-right: 12px;
 }
 
-// 消息提示的小圆点
-.drop_link_notice {
-  position: relative;
-  .notice_bage {
-    position: absolute;
-    top: 5px;
-    right: 13px;
-  }
+.avatar-uploader-icon {
+  font-size: 28px;
+  width: 178px;
+  height: 178px;
+  color: #8c939d;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+.hover-avatar-icon{
+  position: absolute;
+  display: none;
+  left: 50%;
+  top:50%;
+  transform: translate(-50%,-50%);
+  font-size: 28px;
+}
+.mask {
+  position: absolute;
+  display: none;
+  left: 0;
+  top: 0;
+  width: 178px;
+  height: 178px;
+  background-color: rgba(0,0,0,.4)
 }
 </style>

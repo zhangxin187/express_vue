@@ -44,3 +44,47 @@ body {
 .charts .el-date-editor {
   width: 250px;
 }
+
+// 修改下拉框的icon大小
+.el-dropdown-menu__item i {
+  font-size: 16px;
+}
+
+// 修改upload组件的样式
+// 在vue组件当中添加这样的样式,因为有scoped,只能作用于当前组件,对其他组件的修改不生效
+.avatar-uploader .el-upload {
+  border: 1px solid black;
+  width: 178px;
+  height: 178px;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+  .mask {
+    display: block;
+  }
+  .hover-avatar-icon {
+    display: block;
+  }
+}
+
+.el-avatar img{
+  width: 100%;
+  height: 100%;
+}
+
+.index .el-alert .el-alert__title {
+  font-size: 16px;
+}
+
+// iconfont多色图标样式
+.icon {
+  width: 1em; height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+  font-size: 40px;
+}
