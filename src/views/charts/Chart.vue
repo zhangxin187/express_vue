@@ -340,7 +340,6 @@ export default {
     },
 
     async changeCateLineByTimeRange () {
-      console.log(this.cateSeriesDateRange);
       const { data: res } = await this.$axios.get('charts/countCateSeries', {
         params: {
           start: this.cateSeriesDateRange[0],
@@ -363,6 +362,7 @@ export default {
   // 故在侦听器中进行一系列操作,当data发生了变化再执行操作,可以获取到赋值后的data
   watch: {
     countGoods () {
+      console.log(this.echartsGoodsBycount);
       if (this.goodsPieSlectValue === 'count') {
         this.initPie(
           this.$refs.goodsPie,
@@ -394,7 +394,6 @@ export default {
     },
     countCateSeries () {
       this.initLine(this.$refs.cateLine, this.echartsCateSeriesBycount, this.cateRow);
-      console.log(this.echartsCateSeriesBycount);
     }
   },
 
@@ -405,7 +404,11 @@ export default {
       this.countGoods.forEach((item) => {
         result.push({ name: item.name, value: item.count });
       });
-      return result;
+      // 对象数组排序,根据对象.value从大到小排序,并截取前8位
+      // 只展示订单量前8
+      return result.sort((a, b) => {
+        return b.value - a.value;
+      }).slice(0, 8);
     },
 
     // 数据为订单物品重量
@@ -414,7 +417,10 @@ export default {
       this.countGoods.forEach((item) => {
         result.push({ name: item.name, value: item.weight });
       });
-      return result;
+      // 只展示重量前8
+      return result.sort((a, b) => {
+        return b.value - a.value;
+      }).slice(0, 8);
     },
     // 数据为订单分类成交数
     echartsCateBycount () {

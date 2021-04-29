@@ -216,7 +216,7 @@ export default {
   },
 
   methods: {
-    // 获取商品列表
+    // 获取客户列表
     async getCustomers () {
       const { data: res } = await this.$axios.get('customers', {
         params: {

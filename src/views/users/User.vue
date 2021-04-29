@@ -27,8 +27,13 @@
 
     <!-- 用户列表 -->
     <div class="userTable">
-      <el-table :data="users" stripe border style="width: 100%">
+      <el-table :data="users" stripe border style="width: 100%" >
         <el-table-column type="index" label="#"></el-table-column>
+        <el-table-column label="头像" :width="80">
+          <template v-slot="scope">
+              <el-avatar  :src="scope.row.avatar" :size="50" icon="el-icon-user-solid"></el-avatar>
+          </template>
+        </el-table-column>
         <el-table-column prop="name" label="姓名" width="180"></el-table-column>
         <el-table-column prop="phone" label="电话"></el-table-column>
         <el-table-column prop="role" label="角色">
@@ -390,7 +395,6 @@ export default Vue.extend({
     // 编辑用户重置密码
     resetPassword (): void {
       this.editUserForm.password = this.DEFAULT_PW;
-      console.log(this.editUserForm);
     },
 
     // 关闭编辑用户对话框

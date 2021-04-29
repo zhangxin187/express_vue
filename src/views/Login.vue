@@ -31,13 +31,32 @@
                 >登录</el-button
               >
             </el-form-item>
-            <el-form-item>
-              <el-link type="primary" :underline="false">忘记密码？</el-link>
-            </el-form-item>
+            <!-- <el-form-item>
+              <el-link
+                type="primary"
+                :underline="false"
+                @click="findPassDialogVisible = true"
+                >忘记密码？</el-link
+              >
+            </el-form-item> -->
           </el-form>
         </el-card>
       </el-col>
     </el-row>
+    <!-- 找回密码对话框 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -47,6 +66,7 @@ import { ErrorMessage } from '../types/login';
 import Vue from 'vue';
 import { AxiosResponse } from 'node_modules/axios';
 import { ResponseData, LoginData } from '../types/response';
+import { mapMutations } from 'vuex';
 export default Vue.extend({
   data () {
     return {
@@ -64,7 +84,9 @@ export default Vue.extend({
           }
         ],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
-      }
+      },
+      // 找回密码对话框显示隐藏
+      findPassDialogVisible: false
     };
   },
   methods: {
@@ -90,8 +112,22 @@ export default Vue.extend({
             // 存储token
             sessionStorage.setItem('token', (res.data as LoginData).token);
             this.$refs.loginForm.resetFields();
-            // 跳转到首页
-            this.$router.push('home');
+            // 剔除用户信息中敏感字段并存储到state中
+            const user = this.$_.omit(res.data, ['password', 'token']);
+            this.saveUserInfo(user);
+
+            // 增加一个loading状态
+            const loadingInstance = this.$Loading.service({
+              target: 'box-card',
+              text: 'Loading',
+              spinner: 'el-icon-loading'
+            });
+            // 300ms后关闭loading等待状态
+            setTimeout(() => {
+              loadingInstance.close();
+              // 跳转到首页
+              this.$router.push('home');
+            }, 300);
           }
         } else {
           // 只输出第一条错误信息即可
@@ -104,7 +140,10 @@ export default Vue.extend({
           });
         }
       });
-    }
+    },
+
+    // state中的方法
+    ...mapMutations(['saveUserInfo'])
   }
 });
 </script>

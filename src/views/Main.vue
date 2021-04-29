@@ -3,7 +3,7 @@
     <!-- 顶部面包屑导航 -->
     <div class="topNav">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{}">首页</el-breadcrumb-item>
+        <el-breadcrumb-item >首页</el-breadcrumb-item>
         <el-breadcrumb-item v-for="(item, index) in currentBreadcrumb" :key="index">{{ item }}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -71,15 +71,20 @@ export default Vue.extend({
         return item.id === +tabName;
       });
       this.tabPanes.splice(index, 1);
-
       // 更新state
-      // 此处有bug,后期再解决
       // 1.删除非当前tab  2.删除的tab是第一个
       this.changeTabPanes(this.tabPanes);
-      // 让前一个tabPane选中,并更新其对应的面包屑
-      const activeTabPne = this.tabPanes[index - 1];
-      this.changeCurrentBreadcrumb(activeTabPne.breadcrumb);
-      this.changeActiveTabPane(activeTabPne.id);
+      // 判断当前移除的tab和选中的tab是否同一个,如果是同一个需要改变当前选中tabPane
+      if (tabName === this.activeTabPane && this.tabPanes.length !== 0) {
+        // 让前一个tabPane选中,并更新其对应的面包屑
+        const activeTabPne = this.tabPanes[index - 1];
+        this.changeCurrentBreadcrumb(activeTabPne.breadcrumb);
+        this.changeActiveTabPane(activeTabPne.id);
+      } else if (this.tabPanes.length === 0) {
+        // 如果将tabPane全都移除,则将state中的数据置为空
+        this.changeCurrentBreadcrumb([]);
+        this.changeActiveTabPane('');
+      }
     }
   }
 });

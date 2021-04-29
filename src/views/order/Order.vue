@@ -430,13 +430,11 @@ export default {
     async getGoodsWithCate () {
       const { data: res } = await this.$axios.get('goods/withCate');
       this.goodsListWithCate = res.data;
-      console.log('aaaaaaaa', this.goodsListWithCate);
     },
 
     // 确认添加订单
     saveAddOrder () {
       this.$refs.addOrderRef.validate(async valid => {
-        console.log(valid);
         if (valid) {
           // 验证成功
           const cloneForm = this.$_.cloneDeep(this.addOrderForm);
